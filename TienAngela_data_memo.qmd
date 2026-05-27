@@ -1,0 +1,84 @@
+---
+title: "Data Memo"
+subtitle: |
+  | Final Project 
+  | Data Visualization (STAT 302)
+author: "Angela Tien"
+pagetitle: "Data Memo Angela Tien"
+date: today
+
+format:
+  html:
+    toc: true
+    toc-location: left
+    embed-resources: true
+    link-external-newwindow: true
+    fig-dpi: 300
+
+execute:
+  warning: false
+
+from: markdown+emoji 
+reference-location: margin
+citation-location: margin
+---
+
+::: {.callout-tip icon=false}
+
+[https://github.com/stat-302-2026-spring/final-project-angelatien2026.git](https://github.com/stat-302-2026-spring/final-project-angelatien2026.git)
+
+:::
+
+
+
+### Data source
+
+The dataset used in this project was obtained from  Kaggle.
+<https://www.kaggle.com/datasets/bismasajjad/global-ai-job-market-and-salary-trends-2025>
+Specifically, the dataset is titled “Global AI Job Market & Salary Trends 2025” and was uploaded by BISMA SAJJAD. The dataset contains information about  detailed information about AI and machine learning job positions, salaries, and market trends across different countries, experience levels, and company sizes.
+
+### Why this data
+
+
+As a graduating student, I am highly interested in understanding the current job market, especially how artificial intelligence is reshaping employment opportunities and salary trends across industries.
+
+At the same time, this topic also feels personally meaningful and somewhat stressful to me. Like many upcoming graduates, I am thinking seriously about future career paths, required skills, and the competitiveness of the job market. Because AI-related jobs have become one of the fastest-growing areas in recent years, I wanted to explore what kinds of positions, skills, and salary patterns are emerging globally.
+
+Through this project, I hope to answer questions such as:
+
+* Which AI-related roles are currently the most in demand?
+* What technical skills appear most frequently in AI job postings?
+* How do salaries differ across countries, industries, or experience levels?
+* Are remote AI jobs becoming more common?
+* What kinds of career paths seem to have stronger future potential?
+
+Beyond simply analyzing numbers, I hope the visualizations can tell a broader story about how the AI industry is changing the global workforce and how students and young professionals may adapt to these changes. At this stage, I am also exploring the dataset to identify interesting patterns and possible stories that emerge from the data.
+
+### Visualization plan
+
+For this project, I plan to create a presentation with a mix of static and animated graphics. Since my dataset, Global AI Job Market & Salary Trends 2025, focuses on AI-related job positions, salaries, and global labor market trends, I think a presentation format would allow me to build a clear story rather than simply present separate charts.
+
+Most of my visualizations will be static charts, such as bar charts, box plots, scatter plots, and possibly a world map. These charts will help compare salary levels across job titles, countries, experience levels, company sizes, and remote-work options. I may also use one or two simple animated graphics to show the story step by step, such as revealing how salary changes by experience level or showing how different job roles compare across regions.
+
+At this stage, my tentative visualizations include:
+
+* a salary distribution chart to show the overall salary range in AI-related jobs;
+* a bar chart of the most common AI job titles;
+* a box plot comparing salaries by experience level;
+* a map or ranked bar chart comparing countries or regions;
+* a chart showing the relationship between remote work ratio and salary;
+* a skills-focused visualization, if the dataset contains usable skill-related fields.
+
+### Initial data issues
+
+I have successfully downloaded the dataset and imported it into R. I have also started exploring the dataset and examining the variables and overall structure of the data.
+
+One potential issue I noticed involves the “skills” column. Many rows contain multiple skills listed together in a single cell, separated by commas (for example: Python, SQL, TensorFlow, Machine Learning). Since I am interested in creating visualizations related to skill demand, this may require additional data wrangling and preprocessing before analysis.
+
+### Misc
+
+This project is still in an exploratory stage, and my visualization ideas may continue to evolve as I examine the dataset more closely. One of my goals is not only to practice data visualization techniques in R, but also to better understand how data analysis can help reveal patterns in real-world social and economic issues.
+
+Because the dataset combines topics such as AI, careers, salaries, and global trends, I believe it offers many possible directions for storytelling and analysis. I am especially interested in exploring how technical skills, experience levels, and remote work opportunities relate to salary and career opportunities in the AI industry.
+
+I also expect this project to help me improve my data wrangling skills in R, particularly when working with categorical text data such as lists of technical skills.
