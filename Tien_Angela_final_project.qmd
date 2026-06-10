@@ -1,0 +1,360 @@
+
+---
+title: "Global AI Job Market 2025"
+subtitle: "A Roadmap to Career Advancement and Compensation"
+author: "Angela Tien"
+
+format: 
+  revealjs:
+    theme: serif         
+    transition: fade      
+    slide-number: true   
+    embed-resources: true 
+execute:
+  echo: false          
+  warning: false         
+  message: false
+---
+
+## Introduction{.smaller}
+
+::: {.columns}
+
+::: {.column width="40%"}
+### The Context
+As Artificial Intelligence transitions from experimental phases to core enterprise integration in 2025, the career trajectories and compensation structures have evolved dramatically.
+:::
+
+::: {.column width="60%"}
+### Core Questions
+This project maps out a global roadmap to answer three pivotal questions:
+
+- **The Experience Premium**: How much financial growth does career progression yield?
+- **Golden Skills**: Which specific technical skills serve as the highest-valued currency?
+- **Geographical Arbitrage**: Which locations offer the maximum return?
+:::
+
+:::
+
+## Salary Trajectories by Experiences{.smaller}
+
+::: {.columns}
+
+::: {.column width="30%" .smaller}
+
+- **The Premium: ** Median salaries more than *double* from Entry to Executive.
+- **High Ceiling: **  Executive compensation shows massive variance—the sky is the limit.
+:::
+
+::: {.column width="70%"}
+```{r}
+#| label: plot-experience
+#| fig-height: 5
+#| fig-width: 6.5
+#| out-width: "100%"
+#| fig-align: "center"
+
+library(tidyverse)
+library(scales)
+
+# Load Data
+ai_data <- read_csv("data/ai_job_dataset.csv") 
+
+# Data Cleaning
+ai_data_clean <- ai_data %>%
+  mutate(experience_level = factor(experience_level, 
+                                   levels = c("EN", "MI", "SE", "EX"),
+                                   labels = c("Entry", "Mid-level", "Senior", "Executive")))
+
+# Plot
+ggplot(ai_data_clean, aes(x = experience_level, y = salary_usd, fill = experience_level)) +
+  geom_violin(alpha = 0.4, color = NA) +
+  geom_boxplot(width = 0.1, color = "#444444", outlier.alpha = 0.3) +
+  stat_summary(fun = median, geom = "point", color = "darkred", size = 2) + 
+  scale_y_continuous(labels = label_dollar(scale = 1/1000, suffix = "K")) +
+  scale_fill_viridis_d(option = "mako", begin = 0.3, end = 0.8) +
+  labs(
+    title = "Annual Salary Distribution by Experience",
+    subtitle = "AI compensation ceilings rise sharply at Executive level",
+    x = "Career Stage",
+    y = "Annual Salary (USD)",
+    caption = "Source: Global AI Job Market Dataset 2025"
+  ) +
+  theme_minimal(base_family = "sans") +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(size = 10, color = "gray30"),
+    panel.grid.minor = element_blank()
+  ) +
+  annotate("text", x = 3.8, y = 420000, label = "High variance at\nExecutive level", 
+           color = "darkred", size = 2.5, fontface = "italic")
+```
+:::
+:::
+
+## High-Value Roles: Job Category Compensation {.smaller}
+
+::: {.columns}
+
+::: {.column width="30%"}
+
+- **Top Earners: **
+  Research and Engineering roles command the highest median salaries
+
+- **Market Standard: **
+  Most mainstream AI categories cluster around a healthy competitive range, showing robust baseline compensation across the industry.
+
+:::
+
+::: {.column width="70%"}
+```{r}
+#| label: plot-job-category
+#| fig-height: 5
+#| fig-width: 6.5
+#| out-width: "100%"
+#| fig-align: "right"
+
+ai_data_jobs <- ai_data %>%
+  filter(!is.na(job_title)) %>%
+  mutate(job_category = fct_reorder(job_title, salary_usd, .fun = median))
+
+ggplot(ai_data_jobs, aes(x = job_category, y = salary_usd, fill = job_category)) +
+  stat_summary(fun = median, geom = "bar", alpha = 0.8, width = 0.6) +
+  stat_summary(
+    fun = median, 
+    geom = "text", 
+    aes(label = sprintf("$%.0fK", ..y../1000)), 
+    hjust = -0.1, 
+    size = 2.5, 
+    fontface = "bold",
+    color = "gray15"
+  ) +
+  
+  coord_flip() +
+  scale_y_continuous(
+    labels = label_dollar(scale = 1/1000, suffix = "K"),
+    expand = expansion(mult = c(0, 0.15)) 
+  ) +
+  scale_fill_viridis_d(option = "plasma", begin = 0.2, end = 0.8) +
+  labs(
+    title = "Median Annual Salary by Job Category",
+    subtitle = "Technical research and infrastructure roles lead the market",
+    x = "Job Category",
+    y = "Median Annual Salary (USD)",
+    caption = "Source: Global AI Job Market Dataset 2025"
+  ) +
+  theme_minimal(base_family = "sans") +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(face = "bold", size = 13),
+    plot.subtitle = element_text(size = 9, color = "gray30"),
+    axis.text.y = element_text(size = 8, face = "bold"), 
+    axis.text.x = element_text(size = 8),
+    panel.grid.major.y = element_blank(), 
+    panel.grid.minor = element_blank()
+  )
+
+```
+:::
+:::
+
+## High-Valued Technical Skills {.smaller}
+
+::: {.columns}
+
+::: {.column width="30%"}
+
+- **Premium Capabilities: **
+  Advanced engineering skills like MLOps, Distributed Systems, and Large Language Models command higher average compensation.
+
+- **Market Baseline: **
+  Foundational skills (e.g., Python, SQL) have narrower intervals due to higher sample sizes
+:::
+
+::: {.column width="70%"}
+```{r}
+#| label: plot-skills
+#| fig-height: 5
+#| fig-width: 6.5
+#| out-width: "100%"
+#| fig-align: "center"
+
+
+ai_skills_summary <- ai_data %>%
+  filter(!is.na(required_skills)) %>%
+  separate_rows(required_skills, sep = ",") %>%
+  mutate(required_skills = str_trim(required_skills)) %>%
+  filter(required_skills != "") %>%
+  group_by(required_skills) %>%
+  summarise(
+    count = n(),
+    mean_salary = mean(salary_usd, na.rm = TRUE),
+    sd_salary = sd(salary_usd, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  slice_max(count, n = 10) %>%
+  mutate(
+    se = sd_salary / sqrt(count),
+    margin_error = 1.96 * se,
+    ci_lower = mean_salary - margin_error,
+    ci_upper = mean_salary + margin_error,
+    required_skills = fct_reorder(required_skills, mean_salary)
+  )
+
+
+ggplot(ai_skills_summary, aes(x = required_skills, y = mean_salary, color = required_skills)) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.2, size = 0.8, alpha = 0.7) +
+  geom_point(size = 3.5) +
+  coord_flip() +
+  scale_y_continuous(labels = label_dollar(scale = 1/1000, suffix = "K")) +
+  scale_color_viridis_d(option = "viridis", end = 0.8) +
+  labs(
+    title = "Top 10 AI Skills by Mean Annual Salary",
+    subtitle = "Points show sample means; error bars represent 95% confidence intervals",
+    x = "Required Skill",
+    y = "Average Annual Salary (USD)",
+    caption = "Source: Global AI Job Market Dataset 2025"
+  ) +
+  theme_minimal(base_family = "sans") +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(face = "bold", size = 13),
+    plot.subtitle = element_text(size = 9, color = "gray30"),
+    axis.text.y = element_text(size = 8, face = "bold"),
+    axis.text.x = element_text(size = 8),
+    panel.grid.minor = element_blank()
+  )
+```
+:::
+:::
+
+
+## Geographical Arbitrage: Global Salary Disparities {.smaller}
+
+::: {.columns}
+
+::: {.column width="25%"}
+
+- **Nordic Paradox: **
+  Certain Nordic markets edge out the US in *overall median* salary. 
+  
+- **Specialized Sample: **
+  This anomaly is driven by high welfare baselines and data limited to senior expert samples in those regions.
+:::
+
+::: {.column width="75%"}
+```{r}
+#| label: plot-geography
+#| fig-height: 5.5
+#| fig-width: 7
+#| out-width: "100%"
+#| fig-align: "center"
+
+
+ai_geo_data <- ai_data %>%
+  mutate(company_location = str_trim(company_location)) %>%
+  filter(!is.na(company_location) & company_location != "") %>%
+  mutate(
+    company_location = case_when(
+      company_location == "United State" ~ "United States",
+      TRUE ~ company_location
+    ),
+    experience_level = factor(experience_level, 
+                             levels = c("EN", "MI", "SE", "EX"),
+                             labels = c("Entry", "Mid-level", "Senior", "Executive"))
+  ) %>%
+  filter(!is.na(experience_level))
+
+top_3_countries <- ai_geo_data %>%
+  group_by(company_location) %>%
+  summarise(med_salary = median(salary_usd, na.rm = TRUE)) %>%
+  slice_max(med_salary, n = 3) %>%
+  pull(company_location)
+
+ai_geo_data <- ai_geo_data %>%
+  mutate(
+    highlight_color = case_when(
+      company_location == top_3_countries[1] ~ "Rank 1",
+      company_location == top_3_countries[2] ~ "Rank 2",
+      company_location == top_3_countries[3] ~ "Rank 3",
+      TRUE ~ "Other Countries"
+    ),
+    highlight_color = factor(highlight_color, levels = c("Rank 1", "Rank 2", "Rank 3", "Other Countries"))
+  )
+
+
+unique_countries <- sort(unique(ai_geo_data$company_location))
+axis_font_faces <- ifelse(unique_countries %in% top_3_countries, "bold", "plain")
+
+
+ggplot(ai_geo_data, aes(x = company_location, y = salary_usd, fill = highlight_color)) +
+  geom_boxplot(alpha = 0.8, outlier.alpha = 0.2, width = 0.6, color = "#444444") +
+  facet_wrap(~ experience_level, scales = "free_y", nrow = 2) +
+  scale_y_continuous(labels = label_dollar(scale = 1/1000, suffix = "K")) +
+  
+ 
+  scale_fill_manual(
+    values = c(
+      "Rank 1" = "#E05650",       
+      "Rank 2" = "#2D8B93",       
+      "Rank 3" = "#E6A15C",       
+      "Other Countries" = "#EAEAEA" 
+    )
+  ) +
+  labs(
+    title = "Global AI Salary Disparities: Top 3 Markets Highlighted",
+    subtitle = "Identify the top 3 highest-paying countries",
+    x = "Company Location",
+    y = "Annual Salary (USD)",
+    caption = "Source: Global AI Job Market Dataset 2025"
+  ) +
+  theme_minimal(base_family = "sans") +
+  theme(
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    plot.title = element_text(face = "bold", size = 13),
+    plot.subtitle = element_text(size = 9, color = "gray30"),
+    axis.text.x = element_text(size = 7, angle = 45, hjust = 1, face = axis_font_faces), 
+    axis.text.y = element_text(size = 8),
+    strip.text = element_text(face = "bold", size = 9, color = "gray10"),
+    strip.background = element_rect(fill = "gray95", color = NA),
+    panel.grid.minor = element_blank()
+  )
+```
+:::
+:::
+
+
+## Conclusion: Core Insights {.smaller}
+
+::: {.columns}
+
+::: {.column width="50%"}
+### 1. Structured Advancement
+
+- **Predictable Paths: **
+  AI compensation is highly structured. Median salaries more than *double* from Entry to Executive tiers.
+
+- **Market Density: **
+  Senior (SE) roles represent the stablest and most densely populated high-income talent pool.
+
+- **Role Premium: **
+  Research and Infrastructure Engineering command the highest median baselines over generalist roles.
+:::
+
+::: {.column width="50%"}
+### 2. Multipliers & Anomalies
+
+- **Skills Currency: **
+  Specialization acts as a multiplier. MLOps, Distributed Systems, and LLMs yield the highest financial returns.
+
+- **Geographic Power: **
+  Company location heavily dictates pay. 
+
+- **Nordic Paradox: **
+  Certain Nordic markets present a counter-intuitive median premium, driven by senior-heavy expert samples.
+:::
+
+:::
+
